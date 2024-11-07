@@ -59,9 +59,9 @@ Ask me about ...
   - Interests
 
 How to reach me:
-    - LinkedIn: https://www.linkedin.com/in/senhas-diwan-779524336/
-    - Email: senhasdiwan@gmail.com
-    - Github: https://github.com/senhas-rgb
+    - LinkedIn: [click](https://www.linkedin.com/in/senhas-diwan-779524336/)
+    - Email: [click](mailto:senhasdiwan@gmail.com)
+    - Github: [click](https://github.com/senhas-rgb)
 
 Pronouns: He/Him
 Fun fact: I love to learn new things. I am always looking for new technologies to explore and learn.
