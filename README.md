@@ -17,7 +17,7 @@ Here are some ideas to get you started:
 
 I am Senhas Diwan, a Computer Science student from Sri Lanka. I am currently doing my IAL in Computer Science at Lyceum International school, Gampaha. I love to learn and explore new technologies.
 
-My personal website is [here](https://senhas-rgb.github.io/).
+My personal website is [here](https://senhas-rgb.github.io/senhas-rgb/).
 
 I'm currently working on ...
   - Frontend Development
@@ -59,7 +59,7 @@ Ask me about ...
   - Interests
 
 How to reach me:
-    - LinkedIn: (will update link soon)
+    - LinkedIn: https://www.linkedin.com/in/senhas-diwan-779524336/
     - Email: senhasdiwan@gmail.com
     - Github: https://github.com/senhas-rgb
 
