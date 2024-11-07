@@ -17,6 +17,8 @@ Here are some ideas to get you started:
 
 I am Senhas Diwan, a Computer Science student from Sri Lanka. I am currently doing my IAL in Computer Science at Lyceum International school, Gampaha. I love to learn and explore new technologies.
 
+My personal website is [here](https://senhas-rgb.github.io/).
+
 I'm currently working on ...
   - Frontend Development
   - Backend Development
