@@ -143,6 +143,7 @@ h3:hover {
     transition: 0.2s;
     font-size: 40px;
     color: palevioletred;
+    transform: rotate3d(4, 2, 1, 10deg);
 }
 h3:not(:hover) {
     transition: 0.2s;
@@ -175,6 +176,7 @@ p:not(:hover) {
 .image {
     padding: 0;
 }
+
 
 .image:hover {
     transform: rotate3d(10, 3, 1, 30deg);
