@@ -1,5 +1,9 @@
 ## Hi there 👋
 
+![Senhas's GitHub stats](https://github-readme-stats.vercel.app/api?username=senhas-rgb&show_icons=true&theme=transparent)
+
+
+
 <!--
 **senhas-rgb/senhas-rgb** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
 
