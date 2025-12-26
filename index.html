@@ -2,67 +2,550 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Senhas RGB</title>
-    <link rel="stylesheet" href="style.css">
+    <title>peenix.dev</title>
+    <style>
+        :root {
+            /* macOS Light Mode Palette */
+            --app-bg: #ffffff;
+            --sidebar-bg: rgba(245, 245, 245, 0.85);
+            --sidebar-border: #e1e1e1;
+            --text-main: #37352f;
+            --text-muted: #9b9b9b;
+            --selection-color: #cce5ff;
+            --hover-bg: rgba(0, 0, 0, 0.04);
+            --active-bg: rgba(0, 0, 0, 0.08);
+            --font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            --shadow-window: 0 20px 60px rgba(0,0,0,0.15), 0 0 1px rgba(0,0,0,0.1);
+            --search-bg: rgba(255, 255, 255, 0.5);
+            --search-focus-bg: #ffffff;
+            --search-focus-border: #ccc;
+            --card-bg: #ffffff;
+            --card-border: #eeeeee;
+            --timeline-line: #f0f0f0;
+            --timeline-dot-bg: #ffffff;
+        }
+
+        body.dark-mode {
+            --app-bg: #191919;
+            --sidebar-bg: #202020;
+            --sidebar-border: #333333;
+            --text-main: #e0e0e0;
+            --text-muted: #888888;
+            --hover-bg: rgba(255, 255, 255, 0.05);
+            --active-bg: rgba(255, 255, 255, 0.1);
+            --search-bg: rgba(255, 255, 255, 0.05);
+            --search-focus-bg: #2a2a2a;
+            --search-focus-border: #444;
+            --card-bg: #252525;
+            --card-border: #333333;
+            --timeline-line: #333333;
+            --timeline-dot-bg: #191919;
+        }
+
+        * {
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            width: 100vw;
+            background: var(--app-bg);
+            font-family: var(--font-stack);
+            display: flex;
+            align-items: flex-start;
+            justify-content: flex-start;
+            overflow: hidden;
+        }
+
+        /* The "App Window" */
+        .app-window {
+            width: 100%;
+            height: 100%;
+            background: var(--app-bg);
+            border-radius: 0;
+            box-shadow: none;
+            display: flex;
+            overflow: hidden;
+            position: relative;
+            animation: none;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 240px;
+            background: var(--sidebar-bg);
+            border-right: 1px solid var(--sidebar-border);
+            display: flex;
+            flex-direction: column;
+            padding: 16px;
+            backdrop-filter: blur(20px); /* Frosted glass effect */
+            -webkit-backdrop-filter: blur(20px);
+            user-select: none;
+        }
+
+        /* Search Bar */
+        .search-container {
+            margin-bottom: 20px;
+            padding: 0 4px;
+        }
+        .search-input {
+            width: 100%;
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid var(--sidebar-border);
+            background: var(--search-bg);
+            color: var(--text-main);
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+        .search-input:focus { background: var(--search-focus-bg); border-color: var(--search-focus-border); }
+
+        /* Navigation */
+        .nav-section {
+            margin-bottom: 24px;
+        }
+
+        .nav-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            padding-left: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-item {
+            padding: 6px 8px;
+            font-size: 14px;
+            color: var(--text-main);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.15s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-item:hover {
+            background: var(--hover-bg);
+        }
+
+        .nav-item.active {
+            background: var(--active-bg);
+            font-weight: 500;
+        }
+
+        .nav-icon {
+            font-size: 16px;
+            opacity: 0.7;
+        }
+
+        /* Main Editor Area */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            background: var(--app-bg);
+        }
+
+        .editor-container {
+            max-width: 720px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 60px 40px;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        /* Typography & Editor Styling */
+        .post-title {
+            font-size: 40px;
+            font-weight: 700;
+            color: var(--text-main);
+            border: none;
+            width: 100%;
+            margin-bottom: 24px;
+            line-height: 1.2;
+            background: transparent;
+            resize: none;
+        }
+
+        .post-body {
+            font-size: 16px;
+            line-height: 1.6;
+            color: var(--text-main);
+            min-height: 300px;
+        }
+
+        .post-body p {
+            margin-bottom: 1em;
+        }
+
+        .post-body h2 {
+            font-size: 24px;
+            margin-top: 1.5em;
+            margin-bottom: 0.5em;
+            font-weight: 600;
+        }
+
+        [contenteditable]:empty:before {
+            content: attr(placeholder);
+            color: #d1d1d1;
+            cursor: text;
+        }
+
+        /* Projects Grid */
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .project-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            padding: 20px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .project-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            border-color: transparent;
+        }
+        .project-title { font-weight: 600; margin-bottom: 8px; }
+        .project-link { font-size: 12px; color: #0066cc; margin-top: 10px; }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 32px;
+            margin-top: 30px;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 2px;
+            height: 100%;
+            background: var(--timeline-line);
+            transform-origin: top;
+            animation: growLine 5.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+        .timeline-item {
+            position: relative;
+            margin-bottom: 40px;
+            animation: slideInRight 0.5s ease forwards;
+            opacity: 0;
+        }
+        .timeline-item:nth-child(1) { animation-delay: 0.1s; }
+        .timeline-item:nth-child(2) { animation-delay: 0.2s; }
+        .timeline-item:nth-child(3) { animation-delay: 0.3s; }
+        
+        .timeline-dot {
+            position: absolute;
+            left: -38px;
+            top: 0;
+            width: 14px;
+            height: 14px;
+            background: var(--timeline-dot-bg);
+            border: 2px solid var(--text-muted);
+            border-radius: 50%;
+            transition: background 0.3s;
+        }
+        .timeline-item:hover .timeline-dot { background: var(--text-main); border-color: var(--text-main); }
+        .timeline-date { font-size: 12px; color: var(--text-muted); font-weight: 600; margin-bottom: 4px; }
+        .timeline-company { font-size: 18px; font-weight: 700; color: var(--text-main); }
+        .timeline-role { font-size: 14px; color: #555; }
+
+        /* Settings */
+        .settings-option { display: flex; align-items: center; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid var(--sidebar-border); }
+        .toggle-switch { position: relative; width: 40px; height: 22px; background: #ccc; border-radius: 11px; cursor: pointer; transition: 0.3s; }
+        .toggle-switch::after { content: ''; position: absolute; top: 2px; left: 2px; width: 18px; height: 18px; background: #fff; border-radius: 50%; transition: 0.3s; }
+        .toggle-switch.active { background: #28c840; }
+        .toggle-switch.active::after { left: 20px; }
+        
+        /* Animations */
+        @keyframes popIn {
+            from { transform: scale(0.95); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        @keyframes growLine {
+            from { transform: scaleY(0); }
+            to { transform: scaleY(1); }
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(0,0,0,0.1);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(0,0,0,0.2);
+        }
+
+        /* Mobile Support */
+        .mobile-menu-btn {
+            display: none;
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            z-index: 20;
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 6px;
+        }
+        .mobile-menu-btn:hover { background: var(--hover-bg); }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.4);
+            z-index: 90;
+            opacity: 0;
+            transition: opacity 0.3s;
+            backdrop-filter: blur(2px);
+            -webkit-backdrop-filter: blur(2px);
+        }
+
+        @media (max-width: 1024px) {
+            .sidebar {
+                position: absolute;
+                left: 0;
+                top: 0;
+                height: 100%;
+                z-index: 100;
+                transform: translateX(-100%);
+                transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+                box-shadow: 0 0 50px rgba(0,0,0,0.2);
+                width: 280px;
+            }
+            .sidebar.open { transform: translateX(0); }
+            
+            .sidebar-overlay.active {
+                display: block;
+                opacity: 1;
+            }
+            
+            .mobile-menu-btn { display: flex !important; align-items: center; justify-content: center; }
+            
+            .editor-container {
+                padding: 70px 20px 40px 20px;
+            }
+            
+            .post-title { font-size: 32px; }
+        }
+    </style>
 </head>
 <body>
-    <div class="container rounded-main">
-        <div class="header rounded">
-            <h1>Senhas Diwan | senhas-rgb</h1>
-            <p>I am a computer science student from Sri Lanka. I'm interested in web development, operating systems, and backend development. (mostly in C/Golang and a little bit in Javascript)</p>
-        </div>
-        <center><img src="assets/senhas.jpg" alt="Its me" class="rounded image" height="300px" width="300px"></center><br><br>
-        <div class="main">
-            <div class="navbar">
-                <div class="navbar-left">
-                    <center>
-                    <a href="https://github.com/senhas-rgb" class="navbar-link">GitHub</a><br>
-                    <a href="https://www.linkedin.com/in/senhas-diwan-779524336/" class="navbar-link">LinkedIn</a>
-                    </center>
+
+    <div class="app-window">
+        <div class="sidebar-overlay"></div>
+        <button class="mobile-menu-btn" aria-label="Toggle Menu">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+        <aside class="sidebar">
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="Search...">
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Reading stuff?</div>
+                <div class="nav-item active"><span class="nav-icon">📄</span> Welcome</div>
+                <div class="nav-item"><span class="nav-icon">🚀</span> Projects</div>
+                <div class="nav-item"><span class="nav-icon">💼</span> Experience</div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Settings</div>
+                <div class="nav-item"><span class="nav-icon">⚙️</span> Preferences</div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="editor-container">
+                <div class="post-title">👀</div>
+                <div class="post-body">
+                    <p>Uh this where I store all of the things I think people might read.</p>
+                    <p>Feel free to poke around :)</p>
+
+                    <h2>Getting Started</h2>
+                    <p>Select an item from the sidebar to view content.</p>
                 </div>
             </div>
-            <div class="main-right">
-                <div class="project">
-                    <h3>todo-app</h3>
-                    <p>A simple todo app that allows you to add, edit, and delete tasks.</p>
-                    <a href="https://senhas-rgb.github.io/todo-app/" class="project-link">Check it out here!</a>
-                    <a href="https://github.com/senhas-rgb/todo-app" class="project-link">Contribute to it here!</a>
-                </div>
-                <div class="project">
-                    <h3>ASCII-Go</h3>
-                    <p>Having fun with the ASCII generation using Go language.</p>
-                    <a href="https://github.com/senhas-rgb/ASCII-Go" class="project-link">Check it out here! also contribute to it!</a>
-                </div>
-                <div class="project">
-                    <h3>learning-C</h3>
-                    <p>A simple project that I'm learning C language.</p>
-                    <a href="https://github.com/senhas-rgb/learning-C" class="project-link">Check it out here! also contribute to it!</a>
-                </div>
-                <div class="project">
-                    <h3>My personal website</h3>
-                    <p>This is my personal website. I'm using HTML, CSS, and Javascript.</p>
-                    <a href="https://senhas-rgb.github.io/" class="project-link">Check it out here!</a>
-                    <a href="https://github.com/senhas-rgb/senhas-rgb" class="project-link">Contribute to it here!</a>
-                </div>
-            </div>
-        </div>
-        <div class="rounded">
-        <h2>Other side projects / contributions</h2>
-        </div>
-        <p class="text">I'm also a part of the following projects:</p>
-        <div class="project">
-            <h3>eth-os-com</h3>
-            <p>A simple operating system that I'm learning C language.</p>
-            <a href="https://github.com/senhas-rgb/eth-os-com" class="project-link">Check it out here! (my fork)</a>
-            <a href="https://github.com/ethanprogramser/eth-os-com" class="project-link">Check it out here! (original)</a>
-        </div>
-        <div class="footer">            
-            <p>Wanna check out my github profile? <a href="https://github.com/senhas-rgb" class="footer-link">Click here!</a></p>
-        </div>
+        </main>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        // Simple interaction logic
+        const navItems = document.querySelectorAll('.nav-item');
+        const editorContainer = document.querySelector('.editor-container');
+        const titleArea = document.querySelector('.post-title');
+        const bodyArea = document.querySelector('.post-body');
+        const searchInput = document.querySelector('.search-input');
+        
+        // Mobile Menu Logic
+        const menuBtn = document.querySelector('.mobile-menu-btn');
+        const sidebar = document.querySelector('.sidebar');
+        const overlay = document.querySelector('.sidebar-overlay');
+
+        function toggleMenu() {
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('active');
+        }
+
+        menuBtn.addEventListener('click', toggleMenu);
+        overlay.addEventListener('click', toggleMenu);
+
+        // Search Functionality
+        searchInput.addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            navItems.forEach(item => {
+                const text = item.innerText.toLowerCase();
+                item.style.display = text.includes(term) ? 'flex' : 'none';
+            });
+        });
+
+        // Handle Navigation Click
+        navItems.forEach(item => {
+            item.addEventListener('click', () => {
+                // Close mobile menu if open
+                sidebar.classList.remove('open');
+                overlay.classList.remove('active');
+
+                // Remove active class from all
+                navItems.forEach(nav => nav.classList.remove('active'));
+                // Add active class to clicked
+                item.classList.add('active');
+                
+                // Simulate content change with animation
+                editorContainer.style.opacity = '0';
+                editorContainer.style.transform = 'translateY(10px)';
+                
+                setTimeout(() => {
+                    // Update text based on selection (Mock data)
+                    const text = item.innerText.trim();
+                    
+                    if(text.includes('Welcome')) {
+                        titleArea.innerText = "Hello";
+                        bodyArea.innerHTML = `
+                           <p> Uh this where I store all of the things I think people might read.</p>
+                    <p>Feel free to poke around :)</p>
+
+                    <h2>Getting Started</h2>
+                    <p>Select an item from the sidebar to view content.</p>
+                        `;
+                    } else if (text.includes('Projects')) {
+                        titleArea.innerText = "My Projects";
+                        bodyArea.innerHTML = `
+                            <div class="project-grid">
+                                <a href="https://github.com/senhas-rgb/peenix.dev" target="_blank" class="project-card">
+                                    <div class="project-title">Personal Website</div>
+                                    <div>A minimalist portfolio built with HTML/CSS and no frameworks.</div>
+                                    <div class="project-link">https://github.com/senhas-rgb/peenix.dev ↗</div>
+                                </a>
+                                <a href="https://github.com/senhas-rgb/gmtk-2025" target="_blank" class="project-card">
+                                    <div class="project-title">GMTK 2025 game submission</div>
+                                    <div>Game submission for the gmtk 2025 game jam.</div>
+                                    <div class="project-link">https://github.com/senhas-rgb/gmtk-2025 ↗</div>
+                                </a>
+                                <a href="https://titanium-creations.github.io/games/again.html" target="_blank" class="project-card">
+                                    <div class="project-title">AGAIN</div>
+                                    <div>Current commercial game I am working on.</div>
+                                    <div class="project-link">https://titanium-creations.github.io/games/again.html ↗</div>
+                                </a>
+                                <a href="https://titanium-creations.github.io/" target="_blank" class="project-card">
+                                    <div class="project-title">Titanium creations website</div>
+                                    <div>Website created for the gamedev team "Titanium Creations"</div>
+                                    <div class="project-link">https://titanium-creations.github.io ↗</div>
+                                </a>
+                            </div>
+                        `;
+                    } else if (text.includes('Experience')) {
+                        titleArea.innerText = "Work Experience";
+                        bodyArea.innerHTML = `
+                            <div class="timeline">
+                                <div class="timeline-item">
+                                    <div class="timeline-dot"></div>
+                                    <div class="timeline-date">2025 - Present</div>
+                                    <div class="timeline-company">Game development organisation</div>
+                                    <div class="timeline-role">Game developer and Writer</div>
+                                </div>
+                                <div class="timeline-item">
+                                    <div class="timeline-dot"></div>
+                                    <div class="timeline-date">2025 - 2024</div>
+                                    <div class="timeline-company">Freelance editor</div>
+                                    <div class="timeline-role">Video and Photo editor</div>
+                                </div>
+                                <div class="timeline-item">
+                                    <div class="timeline-dot"></div>
+                                    <div class="timeline-date">2024 - 2021</div>
+                                    <div class="timeline-company">Python</div>
+                                    <div class="timeline-role">Student</div>
+                                </div>
+                            </div>
+                        `;
+                    } else if (text.includes('Preferences')) {
+                        titleArea.innerText = "Preferences";
+                        const isDark = document.body.classList.contains('dark-mode');
+                        bodyArea.innerHTML = `
+                            <div class="settings-option">
+                                <span>Dark Mode</span>
+                                <div class="toggle-switch ${isDark ? 'active' : ''}" onclick="toggleTheme(this)"></div>
+                            </div>
+                        `;
+                    } else {
+                        titleArea.innerText = text.replace(/[^a-zA-Z ]/g, "");
+                        bodyArea.innerHTML = `<p>Start writing your thoughts on ${text}...</p>`;
+                    }
+
+                    // Fade back in
+                    editorContainer.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+                    editorContainer.style.opacity = '1';
+                    editorContainer.style.transform = 'translateY(0)';
+                }, 200);
+            });
+        });
+
+        function toggleTheme(btn) {
+            btn.classList.toggle('active');
+            document.body.classList.toggle('dark-mode');
+        }
+    </script>
 </body>
 </html>
